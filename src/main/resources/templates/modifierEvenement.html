@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Événement</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('/css/images/hh.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(211, 211, 211, 0.7); /* Gris clair avec transparence */
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            color: #f8f9fa;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.3); /* Plus clair et moins transparent */
+            color: #000; /* Texte noir pour une meilleure visibilité */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-control::placeholder, .form-select::placeholder {
+            color: #aaa; /* Placeholder avec un gris clair */
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #000;
+            border-color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #000; /* Bouton noir */
+            border-color: #000;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #333; /* Gris foncé au survol */
+            transform: scale(1.05);
+        }
+
+        .btn-primary:focus {
+            box-shadow: 0 0 8px #000;
+        }
+
+        nav.navbar {
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Dashboard Admin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/evenements/dashboard}">Retour au Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Afficher le message de succès -->
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
+
+<!-- Afficher le message d'erreur -->
+<div th:if="${error}" class="alert alert-danger">
+    <p th:text="${error}"></p>
+</div>
+
+<div class="form-container">
+    <div th:if="${message}" class="alert alert-success text-center" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+    <div th:if="${error}" class="alert alert-danger text-center" role="alert">
+        <p th:text="${error}"></p>
+    </div>
+
+    <h1>Modifier un Événement</h1>
+    <form th:action="@{/evenements/modifier}" th:object="${evenement}" method="post">
+        <div th:if="${message}" class="alert alert-success text-center" role="alert">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger text-center" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+        <input type="hidden" th:field="*{id}">
+        <div class="mb-3">
+            <label for="titre" class="form-label">Titre de l'Événement</label>
+            <input type="text" class="form-control" id="titre" th:field="*{titre}" placeholder="Entrez le titre de l'événement" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}" rows="4" placeholder="Entrez une description détaillée" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" th:field="*{date}" required>
+        </div>
+        <div class="mb-3">
+            <label for="lieu" class="form-label">Lieu</label>
+            <input type="text" class="form-control" id="lieu" th:field="*{lieu}" placeholder="Entrez le lieu de l'événement" required>
+        </div>
+        <div class="mb-3">
+            <label for="capacite" class="form-label">Capacité</label>
+            <input type="number" class="form-control" id="capacite" th:field="*{capacite}" placeholder="Entrez la capacité maximale" required min="1">
+        </div>
+        <div class="mb-3">
+            <label for="placesDisponibles" class="form-label">Places disponibles</label>
+            <input type="number" class="form-control" id="placesDisponibles" th:field="*{placesDisponibles}" placeholder="Entrez le nombre des places disponibles" required min="1">
+        </div>
+        <div class="mb-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" th:field="*{type}" required>
+                <option value="" disabled selected>Choisissez le type d'événement</option>
+                <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="prix" class="form-label">Prix</label>
+            <input type="number" class="form-control" id="prix" th:field="*{prix}" placeholder="Entrez le prix de l'événement" required step="0.01">
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Modifier</button>
+            <a class="btn btn-secondary" th:href="@{/evenements/dashboard}">Retour</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
